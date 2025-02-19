@@ -1,28 +1,47 @@
 import { config } from "@/config";
 import { FetchOptions } from "./types";
 
-export async function httpClient<T>(
-  endpoint: string,
-  { body, headers, ...options }: FetchOptions = {}
-): Promise<T> {
-  // Prepare headers
-  const defaultHeaders: Record<string, string> = {
-    "Content-Type": "application/json",
+const createHttpClient = () => {
+  const request = async <T>(
+    endpoint: string,
+    { body, headers, ...options }: FetchOptions = {}
+  ): Promise<T> => {
+    const defaultHeaders: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+
+    const response = await fetch(`${config.BASE_URL}${endpoint}`, {
+      ...options,
+      headers: {
+        ...defaultHeaders,
+        ...headers,
+      },
+      ...(body ? { body: JSON.stringify(body) } : {}),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message ||
+          data.error ||
+          `Request failed with status ${response.status}`
+      );
+    }
+
+    return data;
   };
 
-  const response = await fetch(`${config.BASE_URL}${endpoint}`, {
-    ...options,
-    headers: {
-      ...defaultHeaders,
-      ...headers,
-    },
-    ...(body ? { body: JSON.stringify(body) } : {}),
-  });
+  return {
+    get: <T>(endpoint: string, options?: Omit<FetchOptions, "body">) =>
+      request<T>(endpoint, { ...options, method: "GET" }),
+    post: <T>(endpoint: string, body: unknown, options?: FetchOptions) =>
+      request<T>(endpoint, { ...options, method: "POST", body }),
+    put: <T>(endpoint: string, body: unknown, options?: FetchOptions) =>
+      request<T>(endpoint, { ...options, method: "PUT", body }),
+    delete: <T>(endpoint: string, options?: FetchOptions) =>
+      request<T>(endpoint, { ...options, method: "DELETE" }),
+  };
+};
 
-  if (!response.ok) {
-    const err = await response.json();
-    throw new Error(err.errors || "Request failed");
-  }
-
-  return response.json();
-}
+export const httpClient = createHttpClient();
