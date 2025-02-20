@@ -13,6 +13,14 @@ import { Button } from "../ui/button";
 import { useFileDownloadQuery } from "@/services/files/hooks/queries/useFileQuery";
 import { useState } from "react";
 import { TooltipContent } from "@radix-ui/react-tooltip";
+import { useDeleteFileMutation } from "@/services/files/hooks/mutations/useDeleteFileMutation";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+} from "../ui/dialog";
 
 interface FileTableRowProps {
   files: File[];
@@ -30,10 +38,12 @@ export const FileTableRow = ({ files }: FileTableRowProps) => {
 
 const FileTableRowItem = ({ file }: { file: File }) => {
   const [downloadingId, setDownloadingId] = useState<number | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const { refetch: downloadFile, isFetching } = useFileDownloadQuery({
     id: file.id,
     filename: file.filename,
   });
+  const { mutate: deleteFile, isPending: isDeleting } = useDeleteFileMutation();
 
   return (
     <TableRow>
@@ -80,9 +90,7 @@ const FileTableRowItem = ({ file }: { file: File }) => {
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={() => {
-                console.log("Delete", file.id);
-              }}
+              onClick={() => setConfirmDelete(true)}
               className="text-red-600 focus:text-red-600"
             >
               <Trash2 className="mr-2 h-4 w-4" />
@@ -91,6 +99,31 @@ const FileTableRowItem = ({ file }: { file: File }) => {
           </DropdownMenuContent>
         </DropdownMenu>
       </TableCell>
+
+      <Dialog open={confirmDelete} onOpenChange={setConfirmDelete}>
+        <DialogContent>
+          <DialogTitle>Delete the file</DialogTitle>
+          <DialogDescription>
+            Are you sure you want to delete the file {file.filename}?
+          </DialogDescription>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmDelete(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                deleteFile(file.id, {
+                  onSuccess: () => setConfirmDelete(false),
+                });
+              }}
+              disabled={isDeleting}
+            >
+              {isDeleting ? "Deleting..." : "Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </TableRow>
   );
 };
