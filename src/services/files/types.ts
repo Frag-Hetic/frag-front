@@ -40,3 +40,8 @@ export interface Chunk {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface DownloadFileParams {
+  id: number;
+  filename: string;
+}

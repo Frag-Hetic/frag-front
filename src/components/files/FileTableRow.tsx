@@ -30,10 +30,10 @@ export const FileTableRow = ({ files }: FileTableRowProps) => {
 
 const FileTableRowItem = ({ file }: { file: File }) => {
   const [downloadingId, setDownloadingId] = useState<number | null>(null);
-  const { refetch: downloadFile, isFetching } = useFileDownloadQuery(
-    file.id,
-    file.filename
-  );
+  const { refetch: downloadFile, isFetching } = useFileDownloadQuery({
+    id: file.id,
+    filename: file.filename,
+  });
 
   return (
     <TableRow>

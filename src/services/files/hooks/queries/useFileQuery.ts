@@ -1,13 +1,14 @@
 import { httpClient } from "@/lib/api/httpClient";
 import { useQuery } from "@tanstack/react-query";
-import { File, FileDTO } from "../../types";
+import { DownloadFileParams, File, FileDTO } from "../../types";
 import { fileMapper } from "../../mappers/FileMapper";
-import { config } from "@/config";
+import { toast } from "@/hooks/use-toast";
 
 export const fileKeys = {
   all: ["files"] as const,
   lists: () => [...fileKeys.all, "list"] as const,
   detail: (id: string) => [...fileKeys.all, "detail", id] as const,
+  download: (id: string) => [...fileKeys.all, "download", id] as const,
 };
 
 export const useFilesQuery = () => {
@@ -30,32 +31,36 @@ export const useFileQuery = (id: string) => {
   });
 };
 
-export const useFileDownloadQuery = (id: number, name: string) => {
+export const useFileDownloadQuery = ({ id, filename }: DownloadFileParams) => {
   return useQuery({
-    queryKey: fileKeys.detail(id.toString()),
+    queryKey: fileKeys.download(id.toString()),
     queryFn: async () => {
-      const response = await fetch(`${config.BASE_URL}/files/unsplit/${id}`, {
-        method: "GET",
-        headers: {
-          Accept: "application/octet-stream",
-        },
-      });
+      try {
+        const blob = await httpClient.getBlob(`/files/unsplit/${id}`);
 
-      if (!response.ok) {
-        throw new Error(`Download failed with status ${response.status}`);
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", filename);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+
+        toast({
+          title: "Download success",
+          description: `File ${filename} has been downloaded`,
+        });
+
+        return null;
+      } catch (error) {
+        toast({
+          title: "Download failed",
+          description: `${error && error instanceof Error ? error.message : String(error)}`,
+          variant: "destructive",
+        });
+        return null;
       }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", name);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-
-      return null;
     },
     enabled: false,
   });
