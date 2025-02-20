@@ -4,7 +4,7 @@ import { FetchOptions } from "./types";
 const createHttpClient = () => {
   const request = async <T>(
     endpoint: string,
-    { body, headers, ...options }: FetchOptions = {}
+    { body, headers, responseType, ...options }: FetchOptions = {}
   ): Promise<T> => {
     const defaultHeaders: Record<string, string> = {
       "Content-Type": "application/json",
@@ -23,22 +23,29 @@ const createHttpClient = () => {
       body: isFormData ? body : body ? JSON.stringify(body) : undefined,
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
+      const errorMessage = await response.text();
       throw new Error(
-        data.message ||
-          data.error ||
-          `Request failed with status ${response.status}`
+        errorMessage || `Request failed with status ${response.status}`
       );
     }
 
-    return data;
+    if (responseType === "blob") {
+      return response.blob() as Promise<T>;
+    }
+
+    return response.json();
   };
 
   return {
     get: <T>(endpoint: string, options?: Omit<FetchOptions, "body">) =>
       request<T>(endpoint, { ...options, method: "GET" }),
+    getBlob: (endpoint: string, options?: Omit<FetchOptions, "body">) =>
+      request<Blob>(endpoint, {
+        ...options,
+        method: "GET",
+        responseType: "blob",
+      }),
     post: <T>(endpoint: string, body: unknown, options?: FetchOptions) =>
       request<T>(endpoint, { ...options, method: "POST", body }),
     put: <T>(endpoint: string, body: unknown, options?: FetchOptions) =>

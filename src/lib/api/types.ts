@@ -2,6 +2,7 @@ export type FetchOptions = {
   method?: string;
   headers?: Record<string, string>;
   body?: unknown;
+  responseType?: "json" | "blob";
 } & Omit<RequestInit, "body">;
 
 export interface ApiResponse<T = null> {
