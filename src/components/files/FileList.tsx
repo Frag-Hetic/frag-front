@@ -2,8 +2,8 @@ import { ErrorState } from "../ui/error-state";
 import { EmptyState } from "../ui/empty-state";
 import { FilesIcon } from "lucide-react";
 import { FileTableSkeleton } from "./skeleton/FileTableSkeleton";
-import { useFilesQuery } from "@/services/files/hooks/queries/useFilesQuery";
 import { FileTable } from "./FileTable";
+import { useFilesQuery } from "@/services/files/hooks/queries/useFileQuery";
 
 export default function FileList() {
   const { data: files, isLoading, error } = useFilesQuery();
