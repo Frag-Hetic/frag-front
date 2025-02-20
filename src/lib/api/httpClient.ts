@@ -10,13 +10,17 @@ const createHttpClient = () => {
       "Content-Type": "application/json",
     };
 
+    // Don't set Content-Type for FormData
+    const isFormData = body instanceof FormData;
+    const finalHeaders = isFormData
+      ? { ...headers } // Let browser set Content-Type with boundary
+      : { ...defaultHeaders, ...headers };
+
     const response = await fetch(`${config.BASE_URL}${endpoint}`, {
       ...options,
-      headers: {
-        ...defaultHeaders,
-        ...headers,
-      },
-      ...(body ? { body: JSON.stringify(body) } : {}),
+      headers: finalHeaders,
+      // Don't stringify FormData
+      body: isFormData ? body : body ? JSON.stringify(body) : undefined,
     });
 
     if (!response.ok) {

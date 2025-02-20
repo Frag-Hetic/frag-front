@@ -1,5 +1,7 @@
+// src/components/files/FileDetailHeader.tsx
 import { DetailedFile } from "@/services/files/types";
-import { CardDescription, CardHeader, CardTitle } from "../ui/card";
+import { CalendarClock } from "lucide-react";
+import { Separator } from "../ui/separator";
 
 interface FileDetailHeaderProps {
   file: DetailedFile;
@@ -7,10 +9,31 @@ interface FileDetailHeaderProps {
 
 export const FileDetailHeader = ({ file }: FileDetailHeaderProps) => {
   return (
-    <CardHeader>
-      {file.fileIcon}
-      <CardTitle className="text-xl">{file.filename}</CardTitle>
-      <CardDescription>{file.mimeType}</CardDescription>
-    </CardHeader>
+    <div className="px-6 pb-4">
+      {/* Icon */}
+      <div className="flex items-center justify-center mb-6">
+        <div className="p-4 bg-primary/5 rounded-full transition-transform hover:scale-105">
+          {file.fileIcon}
+        </div>
+      </div>
+
+      {/* File Info */}
+      <div className="space-y-4">
+        <div className="text-center space-y-1">
+          <h3 className="text-xl font-semibold tracking-tight">
+            {file.filename}
+          </h3>
+          <p className="text-sm text-muted-foreground">{file.mimeType}</p>
+        </div>
+
+        <Separator />
+
+        {/* Processing Time */}
+        <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+          <CalendarClock className="h-4 w-4" />
+          <span>Processing time: {file.stats.processingTime}</span>
+        </div>
+      </div>
+    </div>
   );
 };
