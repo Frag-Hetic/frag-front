@@ -1,7 +1,10 @@
+import React from "react";
+
 export interface FileDTO {
   id: number;
   filename: string;
   fileSize: number;
+  compressedFileSize: number;
   mimeType: string;
   checkhash: string;
   filesChunks: FileChunk[];
@@ -13,8 +16,21 @@ export interface File {
   id: number;
   filename: string;
   fileSize: string;
+  compressedFileSize: string;
   mimeType: string;
   chunkNumber: number;
+  createdAt: string;
+  updatedAt: string;
+}
+export interface DetailedFile {
+  id: number;
+  fileIcon: React.ReactNode;
+  filename: string;
+  fileSize: string;
+  compressedFileSize: string;
+  mimeType: string;
+  chunkNumber: number;
+  filesChunks: FileChunk[];
   createdAt: string;
   updatedAt: string;
 }

@@ -1,13 +1,28 @@
 import { formatSizeToMbSize, mapStringToDateFormat } from "@/lib/utils";
-import { File, FileDTO } from "../types";
+import { DetailedFile, File, FileDTO } from "../types";
+import { mapMimeTypeToFileIcon } from "../fileUtils";
 
 export const fileMapper = {
   toFile: (dto: FileDTO): File => ({
     id: dto.id,
     filename: dto.filename,
     fileSize: formatSizeToMbSize(dto.fileSize),
+    compressedFileSize: formatSizeToMbSize(dto.compressedFileSize),
     mimeType: dto.mimeType,
     chunkNumber: dto.filesChunks.length,
+    createdAt: mapStringToDateFormat(dto.createdAt),
+    updatedAt: mapStringToDateFormat(dto.updatedAt),
+  }),
+
+  toDetailedFile: (dto: FileDTO): DetailedFile => ({
+    id: dto.id,
+    fileIcon: mapMimeTypeToFileIcon(dto.mimeType),
+    filename: dto.filename,
+    fileSize: formatSizeToMbSize(dto.fileSize),
+    compressedFileSize: formatSizeToMbSize(dto.compressedFileSize),
+    mimeType: dto.mimeType,
+    chunkNumber: dto.filesChunks.length,
+    filesChunks: dto.filesChunks,
     createdAt: mapStringToDateFormat(dto.createdAt),
     updatedAt: mapStringToDateFormat(dto.updatedAt),
   }),
