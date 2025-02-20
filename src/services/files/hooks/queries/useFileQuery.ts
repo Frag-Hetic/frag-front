@@ -1,6 +1,6 @@
 import { httpClient } from "@/lib/api/httpClient";
 import { useQuery } from "@tanstack/react-query";
-import { DownloadFileParams, File, FileDTO } from "../../types";
+import { DownloadFileParams, DetailedFile, File, FileDTO } from "../../types";
 import { fileMapper } from "../../mappers/FileMapper";
 import { toast } from "@/hooks/use-toast";
 
@@ -22,11 +22,11 @@ export const useFilesQuery = () => {
 };
 
 export const useFileQuery = (id: string) => {
-  return useQuery<File>({
+  return useQuery<DetailedFile>({
     queryKey: fileKeys.detail(id),
     queryFn: async () => {
       const response = await httpClient.get<FileDTO>(`/files/${id}`);
-      return fileMapper.toFile(response);
+      return fileMapper.toDetailedFile(response);
     },
   });
 };
