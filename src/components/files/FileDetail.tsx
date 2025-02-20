@@ -46,7 +46,7 @@ export default function FileDetail({ fileId }: FileDetailProps) {
             </div>
           </div>
         </CardHeader>
-        <FileDetailChunkTable fileChunks={file.filesChunks} />
+        <FileDetailChunkTable fileChunks={file.chunksDetails} />
       </Card>
     </div>
   );

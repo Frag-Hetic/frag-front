@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { httpClient } from "@/lib/api/httpClient";
 import { useToast } from "@/hooks/use-toast";
-import type { UploadFileData, UploadFileResponse } from "../../type";
+import type { UploadFileData, UploadFileResponse } from "../../types";
 
 export const useUploadFileMutation = () => {
   const { toast } = useToast();

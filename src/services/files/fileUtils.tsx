@@ -4,23 +4,23 @@ import {
   AudioLines,
   FileText,
   File as FileIcon,
+  LucideIcon,
 } from "lucide-react";
-import { ReactNode } from "react";
 
-export function mapMimeTypeToFileIcon(mimeType: string): ReactNode {
-  const iconClassName = "h-20 w-20";
+const ICON_SIZE = "h-12 w-12";
 
-  if (mimeType.includes("image")) {
-    return <ImageIcon className={iconClassName} />;
-  }
-  if (mimeType.includes("video")) {
-    return <VideoIcon className={iconClassName} />;
-  }
-  if (mimeType.includes("audio")) {
-    return <AudioLines className={iconClassName} />;
-  }
-  if (mimeType.includes("text")) {
-    return <FileText className={iconClassName} />;
-  }
-  return <FileIcon className={iconClassName} />;
+const MIME_TYPE_ICONS: Record<string, LucideIcon> = {
+  image: ImageIcon,
+  video: VideoIcon,
+  audio: AudioLines,
+  text: FileText,
+} as const;
+
+export function mapMimeTypeToFileIcon(mimeType: string) {
+  const IconComponent =
+    Object.entries(MIME_TYPE_ICONS).find(([type]) =>
+      mimeType.includes(type)
+    )?.[1] ?? FileIcon;
+
+  return <IconComponent className={ICON_SIZE} />;
 }
