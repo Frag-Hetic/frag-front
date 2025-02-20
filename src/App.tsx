@@ -5,6 +5,7 @@ import { queryClient } from "./lib/query/queryClient";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import UserRouter from "./routes/UserRouter";
 import { Toaster } from "./components/ui/toaster";
+import FileRouter from "./routes/FileRouter";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/files/*" element={<FileRouter />} />
           <Route path="/users/*" element={<UserRouter />} />
           <Route path="/*" element={<div>not foud</div>} />
         </Routes>
