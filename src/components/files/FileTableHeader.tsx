@@ -5,12 +5,12 @@ export const FileTableHeader = () => {
     <TableHeader>
       <TableRow>
         <TableHead>ID</TableHead>
-        <TableHead>Nom du fichier</TableHead>
+        <TableHead>File Name</TableHead>
         <TableHead>Size</TableHead>
         <TableHead>Type</TableHead>
-        <TableHead>Date de création</TableHead>
-        <TableHead>Date de modification</TableHead>
-        <TableHead className="text-right">Nb of chunks</TableHead>
+        <TableHead>Creation Date</TableHead>
+        <TableHead>Last Update Date</TableHead>
+        <TableHead className="text-right">Number of Chunks</TableHead>
         <TableHead className="w-[50px]"></TableHead>
       </TableRow>
     </TableHeader>
