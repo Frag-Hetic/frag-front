@@ -18,8 +18,8 @@ export const FileDetailChunkTable = ({
   fileChunks,
 }: FileDetailChunkTableProps) => {
   return (
-    <ScrollArea className="h-[350px] rounded-md border p-4">
-      <Table>
+    <ScrollArea className="h-[350px] rounded-md p-4">
+      <Table className="">
         <TableHeader>
           <TableRow>
             <TableHead>ID</TableHead>

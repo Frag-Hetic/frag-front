@@ -1,5 +1,4 @@
 import { DetailedFile } from "@/services/files/types";
-import { CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { Delete, Download } from "lucide-react";
 
@@ -9,33 +8,28 @@ interface FileDetailContentProps {
 
 export const FileDetailContent = ({ file }: FileDetailContentProps) => {
   return (
-    <>
-      <CardContent className="font-bold flex flex-col gap-2">
-        <p>Original size : {file.fileSize}</p>
-        <p>Compressed size : {file.compressedFileSize}</p>
-      </CardContent>
-      <CardContent className="flex flex-row gap-1">
-        <Button
-          size="sm"
-          variant="default"
-          onClick={() => {
-            console.log("Download file");
-          }}
-        >
-          <Download className="h-4 w-4 mr-2" />
+    <div className="px-6 space-y-6">
+      <div className="space-y-2">
+        <div className="flex justify-between text-sm">
+          <span className="text-muted-foreground">Original size</span>
+          <span className="font-medium">{file.fileSize}</span>
+        </div>
+        <div className="flex justify-between text-sm">
+          <span className="text-muted-foreground">Compressed size</span>
+          <span className="font-medium">{file.compressedFileSize}</span>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <Button className="w-full" size="sm">
+          <Download className="mr-2 h-4 w-4" />
           Download
         </Button>
-        <Button
-          onClick={() => {
-            console.log("Delete file");
-          }}
-          size="sm"
-          variant="destructive"
-        >
-          <Delete className="h-4 w-4 mr-2" />
+        <Button variant="destructive" size="sm" className="w-full">
+          <Delete className="mr-2 h-4 w-4" />
           Delete
         </Button>
-      </CardContent>
-    </>
+      </div>
+    </div>
   );
 };

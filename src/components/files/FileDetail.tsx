@@ -2,7 +2,7 @@ import { ErrorState } from "../ui/error-state";
 import { useFileQuery } from "@/services/files/hooks/queries/useFileQuery";
 import { FileDetailSkeleton } from "./FileDetailSkeleton";
 import { FileDetailContent } from "./FileDetailContent";
-import { Card } from "../ui/card";
+import { Card, CardHeader } from "../ui/card";
 import { FileDetailHeader } from "./FileDetailHeader";
 import { FileDetailChunkTable } from "./FileDetailChunkTable";
 
@@ -12,15 +12,10 @@ interface FileDetailProps {
 
 export default function FileDetail({ fileId }: FileDetailProps) {
   const { data: file, isLoading, error } = useFileQuery(fileId);
-  if (isLoading) {
-    return (
-      <div className="grid gap-4 mt-4">
-        <FileDetailSkeleton />
-      </div>
-    );
-  }
 
-  if (!!error || file === undefined) {
+  if (isLoading) return <FileDetailSkeleton />;
+
+  if (!!error || !file) {
     return (
       <ErrorState
         title={`Failed to load file ${fileId}`}
@@ -30,23 +25,29 @@ export default function FileDetail({ fileId }: FileDetailProps) {
     );
   }
 
-  console.log("file", file);
-
   return (
-    <div className="flex flex-row gap-4 mt-4">
-      <div>
-        <h1 className="text-xl font-bold mt-4">Details</h1>
-        <Card className="h-[350px] rounded-md border p-4">
-          <FileDetailHeader file={file} />
-          <FileDetailContent file={file} />
-        </Card>
-      </div>
-      <div className="flex flex-col">
-        <h1 className="text-xl font-semibold mt-4">
-          File Chunks : {file.chunkNumber}
-        </h1>
+    <div className="grid lg:grid-cols-3 gap-6">
+      <Card className="lg:col-span-1">
+        <CardHeader className="pb-2">
+          <h2 className="text-lg font-semibold">File Information</h2>
+        </CardHeader>
+        <FileDetailHeader file={file} />
+        <FileDetailContent file={file} />
+      </Card>
+
+      <Card className="lg:col-span-2">
+        <CardHeader className="pb-2">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold">File Chunks</h2>
+              <p className="text-sm text-muted-foreground">
+                Total chunks: {file.chunkNumber}
+              </p>
+            </div>
+          </div>
+        </CardHeader>
         <FileDetailChunkTable fileChunks={file.filesChunks} />
-      </div>
+      </Card>
     </div>
   );
 }
