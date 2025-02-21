@@ -15,26 +15,26 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
 const chunkNorrisFacts = [
-  "Chuck Norris can compress a file to -1 bytes.",
-  "Chuck Norris doesn't split files, files split themselves out of fear.",
-  "Chuck Norris can download files before they're uploaded.",
-  "When Chuck Norris does a roundhouse kick, he creates perfect chunks.",
-  "Chuck Norris's beard contains infinite compression algorithms.",
-  "Chuck Norris can compress air into a black hole.",
-  "Chuck Norris's chunks are so perfect, they compress themselves.",
-  "Chuck Norris can compress infinity into a byte.",
-  "When Chuck Norris uploads a file, the server downloads in fear.",
-  "Chuck Norris's compression ratio is over 9000%.",
-  "Chuck Norris can compress a file by staring at it.",
-  "Chuck Norris's roundhouse kick is the ultimate hash function.",
-  "Chuck Norris doesn't need algorithms, algorithms need Chuck Norris.",
-  "Chuck Norris can compress a file without losing any data... twice.",
-  "Chuck Norris's code doesn't need comments, it comments itself out of respect.",
-  "Chuck Norris can compile binary by roundhouse kicking the source code.",
-  "Chuck Norris's chunks are so efficient, they occupy negative space.",
-  "Chuck Norris can compress a void into a smaller void.",
-  "When Chuck Norris merges chunks, they thank him.",
-  "Chuck Norris's compression algorithm is just 'Be smaller... or else.'",
+  "Chunk Norris can compress a file to -1 bytes.",
+  "Chunk Norris doesn't split files, files split themselves out of fear.",
+  "Chunk Norris can download files before they're uploaded.",
+  "When Chunk Norris does a roundhouse kick, he creates perfect chunks.",
+  "Chunk Norris's beard contains infinite compression algorithms.",
+  "Chunk Norris can compress air into a black hole.",
+  "Chunk Norris's chunks are so perfect, they compress themselves.",
+  "Chunk Norris can compress infinity into a byte.",
+  "When Chunk Norris uploads a file, the server downloads in fear.",
+  "Chunk Norris's compression ratio is over 9000%.",
+  "Chunk Norris can compress a file by staring at it.",
+  "Chunk Norris's roundhouse kick is the ultimate hash function.",
+  "Chunk Norris doesn't need algorithms, algorithms need Chunk Norris.",
+  "Chunk Norris can compress a file without losing any data... twice.",
+  "Chunk Norris's code doesn't need comments, it comments itself out of respect.",
+  "Chunk Norris can compile binary by roundhouse kicking the source code.",
+  "Chunk Norris's chunks are so efficient, they occupy negative space.",
+  "Chunk Norris can compress a void into a smaller void.",
+  "When Chunk Norris merges chunks, they thank him.",
+  "Chunk Norris's compression algorithm is just 'Be smaller... or else.'",
 ] as const;
 
 function HomePage() {
@@ -43,7 +43,7 @@ function HomePage() {
     Math.floor(Math.random() * chunkNorrisFacts.length)
   );
 
-  const handleChuckClick = () => {
+  const handleChunkClick = () => {
     if (isKicking) return;
     setIsKicking(true);
     let newIndex;
@@ -59,17 +59,17 @@ function HomePage() {
       <div className="flex-1 flex flex-col items-center justify-center p-8 space-y-8 text-center">
         <div
           className="relative w-32 h-32 mb-12 group"
-          onClick={handleChuckClick}
+          onClick={handleChunkClick}
         >
           {/* Removed Flame Effect */}
 
           {/* Pulse Effect */}
           <div className="absolute inset-0 bg-primary/10 rounded-full animate-pulse" />
 
-          {/* Chuck Image */}
+          {/* Chunk Image */}
           <img
             src={ChunkNorrisImage}
-            alt="Chuck Noris"
+            alt="Chunk Norris"
             className={cn(
               "w-full h-full object-cover rounded-full shadow-lg border-2 border-primary/20",
               "transform transition-all duration-1000 cursor-pointer",
@@ -112,7 +112,7 @@ function HomePage() {
             </span>
           </h1>
           <p className="text-xl text-muted-foreground">
-            The Chunk Norris of file compression. Roundhouse kicks your files
+            The Chuck Norris of file compression. Roundhouse kicks your files
             into smaller chunks with unmatched precision.
           </p>
         </div>
@@ -155,8 +155,8 @@ function HomePage() {
 
       <footer className="py-6 text-center text-sm text-muted-foreground">
         <p>
-          They say Chuck Norris can divide by zero. Noris can compress a file to
-          0 bytes.
+          They say Chuck Norris can divide by zero. Norris can compress a file
+          to 0 bytes.
         </p>
       </footer>
     </div>
@@ -172,7 +172,7 @@ const features = [
   {
     title: "Lightning Fast",
     description:
-      "Processes files faster than Chuck Norris can count to infinity",
+      "Processes files faster than Chunk Norris can count to infinity",
     icon: Zap,
   },
   {
