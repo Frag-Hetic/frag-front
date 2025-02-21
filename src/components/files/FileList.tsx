@@ -4,6 +4,21 @@ import { FilesIcon } from "lucide-react";
 import { FileTableSkeleton } from "./skeleton/FileTableSkeleton";
 import { FileTable } from "./FileTable";
 import { useFilesQuery } from "@/services/files/hooks/queries/useFileQuery";
+import { FileTypePieChart } from "./FileTypePieChart";
+import { FileSizeChunkChart } from "./FileSizeChunkChart";
+import { Separator } from "../ui/separator";
+
+// Fonction pour parser la taille des fichiers
+function parseSize(sizeStr: string) {
+  if (sizeStr.includes(" B")) {
+    return parseFloat(sizeStr.replace(" B", "")) / 1024 / 1024; // Convertit en MB
+  } else if (sizeStr.includes("KB")) {
+    return parseFloat(sizeStr.replace(" KB", "")) / 1024; // Convertit en MB
+  } else if (sizeStr.includes("MB")) {
+    return parseFloat(sizeStr.replace(" MB", ""));
+  }
+  return 0; // Sécurité si la donnée est mal formée
+}
 
 export default function FileList() {
   const { data: files, isLoading, error } = useFilesQuery();
@@ -15,7 +30,7 @@ export default function FileList() {
   if (error) {
     return (
       <ErrorState
-        title="Failed to load users"
+        title="Failed to load files"
         message="There was an error loading the files list. Please try again."
         className="mt-4"
       />
@@ -33,9 +48,51 @@ export default function FileList() {
     );
   }
 
+  const chartData = files
+    .map((file) => {
+      const originalSize = parseSize(file.stats.originalSize);
+      const chunksCount = file.chunksCount;
+      return {
+        fileSize: originalSize,
+        chunkCount: chunksCount,
+      };
+    })
+    .sort((a, b) => a.fileSize - b.fileSize);
+
+  const chartDataMimeType = files.map((file) => {
+    const compressedSize = parseSize(file.stats.compressedSize);
+    return {
+      mimeType: file.mimeType,
+      compressedSize: compressedSize,
+    };
+  });
+
   return (
-    <div className="border rounded-md">
-      <FileTable files={files} />
+    <div className="space-y-8">
+      {/* Files Table Section */}
+      <section className="mb-8">
+        <div className="border rounded-md">
+          <FileTable files={files} />
+        </div>
+      </section>
+
+      {/* Analytics Section */}
+      <section className="space-y-6">
+        <div className="flex items-center">
+          <div>
+            <h2 className="text-2xl font-semibold tracking-tight">Analytics</h2>
+            <p className="text-sm text-muted-foreground">
+              Visualize your file compression statistics
+            </p>
+          </div>
+        </div>
+        <Separator />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FileTypePieChart chartDataMimeType={chartDataMimeType} />
+          <FileSizeChunkChart chartData={chartData} />
+        </div>
+      </section>
     </div>
   );
 }

@@ -20,7 +20,7 @@ export const FileDetailHeader = ({ file }: FileDetailHeaderProps) => {
       {/* File Info */}
       <div className="space-y-4">
         <div className="text-center space-y-1">
-          <h3 className="text-xl font-semibold tracking-tight">
+          <h3 className="text-xl font-semibold tracking-tight truncate max-w-[500px] mx-auto">
             {file.filename}
           </h3>
           <p className="text-sm text-muted-foreground">{file.mimeType}</p>
