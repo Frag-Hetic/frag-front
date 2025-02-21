@@ -1,5 +1,7 @@
 import { useSearchParams } from "react-router-dom";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
+import { fileKeys, useFilesQuery } from "./queries/useFileQuery";
+import { queryClient } from "@/lib/query/queryClient";
 
 interface FilterParams {
   fileName: string;
@@ -8,14 +10,18 @@ interface FilterParams {
 
 export function useFileFilters() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { refetch } = useFilesQuery(); // Toujours appeler le hook, même si on ne l'utilise pas directement
 
-  const filters: FilterParams = {
-    fileName: searchParams.get("fileName") ?? "",
-    mimeType: searchParams.get("mimeType") ?? "",
-  };
+  const filters: FilterParams = useMemo(
+    () => ({
+      fileName: searchParams.get("fileName") ?? "",
+      mimeType: searchParams.get("mimeType") ?? "",
+    }),
+    [searchParams]
+  );
 
   const updateFilter = useCallback(
-    (key: keyof FilterParams, value: string | null) => {
+    async (key: keyof FilterParams, value: string | null) => {
       setSearchParams((prev) => {
         if (value) {
           prev.set(key, value);
@@ -24,8 +30,15 @@ export function useFileFilters() {
         }
         return prev;
       });
+
+      // Relancer la requête après la mise à jour des filtres
+      await queryClient.invalidateQueries({
+        queryKey: fileKeys.lists(),
+        exact: true,
+      });
+      await refetch();
     },
-    [setSearchParams]
+    [setSearchParams, refetch]
   );
 
   return { filters, updateFilter };

@@ -8,6 +8,7 @@ import {
 } from "../../types";
 import { fileMapper } from "../../mappers/FileMapper";
 import { toast } from "@/hooks/use-toast";
+import { useSearchParams } from "react-router-dom";
 
 export const fileKeys = {
   all: ["files"] as const,
@@ -16,12 +17,30 @@ export const fileKeys = {
   download: (id: string) => [...fileKeys.all, "download", id] as const,
 };
 
+interface FileFilters {
+  fileName?: string;
+  mimeType?: string;
+}
+
 export const useFilesQuery = () => {
   // useFileFilterQuery
+  const [searchParams] = useSearchParams();
+  const filters: FileFilters = {
+    fileName: searchParams.get("fileName") ?? undefined,
+    mimeType: searchParams.get("mimeType") ?? undefined,
+  };
+
   return useQuery<FileListItem[]>({
     queryKey: fileKeys.lists(),
     queryFn: async () => {
-      const response = await httpClient.get<FileDTO[]>("/files");
+      const params = new URLSearchParams();
+      if (filters.fileName) params.set("fileName", filters.fileName);
+      if (filters.mimeType && filters.mimeType !== "all")
+        params.set("mimeType", filters.mimeType);
+
+      const queryString = params.toString();
+      const url = `/files${queryString ? `?${queryString}` : ""}`;
+      const response = await httpClient.get<FileDTO[]>(url);
       return fileMapper.toFileList(response);
     },
   });
