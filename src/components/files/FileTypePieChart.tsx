@@ -1,7 +1,7 @@
 "use client";
 
 import { TrendingUp } from "lucide-react";
-import { Label, Pie, PieChart, Legend } from "recharts"; // Import du composant Legend
+import { Label, Pie, PieChart } from "recharts";
 import {
   ChartConfig,
   ChartContainer,
@@ -141,19 +141,6 @@ export function FileTypePieChart({
                 }}
               />
             </Pie>
-            <Legend
-              verticalAlign="bottom"
-              align="center"
-              iconType="circle"
-              formatter={(value: string) => {
-                console.log(mimeTypeGroups[value]);
-                const size = mimeTypeGroups[value] || 0;
-                const label =
-                  chartConfig[value as keyof typeof chartConfig]?.label ||
-                  value;
-                return `${label}: ${size.toLocaleString()} MB`;
-              }}
-            />
           </PieChart>
         </ChartContainer>
       </CardContent>

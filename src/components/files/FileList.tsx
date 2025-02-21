@@ -4,9 +4,9 @@ import { FilesIcon } from "lucide-react";
 import { FileTableSkeleton } from "./skeleton/FileTableSkeleton";
 import { FileTable } from "./FileTable";
 import { useFilesQuery } from "@/services/files/hooks/queries/useFileQuery";
-import { CardContent } from "@/components/ui/card";
 import { FileTypePieChart } from "./FileTypePieChart";
 import { FileSizeChunkChart } from "./FileSizeChunkChart";
+import { Separator } from "../ui/separator";
 
 // Fonction pour parser la taille des fichiers
 function parseSize(sizeStr: string) {
@@ -68,14 +68,31 @@ export default function FileList() {
   });
 
   return (
-    <>
-      <div className="border rounded-md">
-        <FileTable files={files} />
-      </div>
-      <CardContent>
-        <FileTypePieChart chartDataMimeType={chartDataMimeType} />
-      </CardContent>
-      <FileSizeChunkChart chartData={chartData} />
-    </>
+    <div className="space-y-8">
+      {/* Files Table Section */}
+      <section className="mb-8">
+        <div className="border rounded-md">
+          <FileTable files={files} />
+        </div>
+      </section>
+
+      {/* Analytics Section */}
+      <section className="space-y-6">
+        <div className="flex items-center">
+          <div>
+            <h2 className="text-2xl font-semibold tracking-tight">Analytics</h2>
+            <p className="text-sm text-muted-foreground">
+              Visualize your file compression statistics
+            </p>
+          </div>
+        </div>
+        <Separator />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FileTypePieChart chartDataMimeType={chartDataMimeType} />
+          <FileSizeChunkChart chartData={chartData} />
+        </div>
+      </section>
+    </div>
   );
 }
