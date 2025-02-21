@@ -71,13 +71,15 @@ export const FileDetailChunkTable = ({
               <TableCell>
                 <Badge
                   variant={
-                    Number(chunk.compressionRatio) < 50
-                      ? "default"
-                      : "secondary"
+                    chunk.isExpanded
+                      ? "destructive"
+                      : Number(chunk.spaceSaved) > 50
+                        ? "success"
+                        : "secondary"
                   }
                   className="font-mono"
                 >
-                  {chunk.compressionRatio}%
+                  {chunk.spaceSaved}%
                 </Badge>
               </TableCell>
               <TableCell>

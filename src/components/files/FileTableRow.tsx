@@ -73,7 +73,7 @@ const FileTableRowItem = ({ file }: { file: FileListItem }) => {
 
       {/* Space Saved */}
       <TableCell>
-        <Badge variant={file.stats.spaceSaved > 50 ? "default" : "secondary"}>
+        <Badge variant={file.stats.spaceSaved > 50 ? "success" : "secondary"}>
           {file.stats.spaceSaved}%
         </Badge>
       </TableCell>

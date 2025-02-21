@@ -68,17 +68,23 @@ export const fileMapper = {
     stats: mapFileStats(dto),
     config: mapFileConfig(dto),
     chunkNumber: dto.filesChunks.length,
-    chunksDetails: dto.filesChunks.map((chunk) => ({
-      id: chunk.id,
-      hash: chunk.chunk.hash,
-      order: chunk.chunkOrder,
-      originalSize: formatSizeToBytes(chunk.chunk.sizeOriginal),
-      compressedSize: formatSizeToBytes(chunk.chunk.sizeCompressed),
-      compressionRatio: (
-        (chunk.chunk.sizeCompressed / chunk.chunk.sizeOriginal) *
-        100
-      ).toFixed(2),
-      compressionType: chunk.chunk.compressionType,
-    })),
+    chunksDetails: dto.filesChunks.map((chunk) => {
+      const compressionRatio =
+        (chunk.chunk.sizeCompressed / chunk.chunk.sizeOriginal) * 100;
+      const spaceSaved = 100 - compressionRatio;
+      const isExpanded = compressionRatio > 100;
+
+      return {
+        id: chunk.id,
+        hash: chunk.chunk.hash,
+        order: chunk.chunkOrder,
+        originalSize: formatSizeToBytes(chunk.chunk.sizeOriginal),
+        compressedSize: formatSizeToBytes(chunk.chunk.sizeCompressed),
+        compressionRatio: `${compressionRatio.toFixed(2)}`,
+        spaceSaved: `${spaceSaved.toFixed(2)}`,
+        isExpanded,
+        compressionType: chunk.chunk.compressionType,
+      };
+    }),
   }),
 };
