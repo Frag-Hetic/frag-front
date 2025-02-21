@@ -11,7 +11,7 @@ import { Trash2 } from "lucide-react";
 interface DeleteFileDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: (e: React.MouseEvent<HTMLButtonElement>) => void;
   isDeleting: boolean;
   filename: string;
 }
