@@ -11,7 +11,6 @@ import { Clock, Download, MoreHorizontal, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useFileDownloadQuery } from "@/services/files/hooks/queries/useFileQuery";
 import { useState } from "react";
-import { TooltipContent } from "@radix-ui/react-tooltip";
 import { useDeleteFileMutation } from "@/services/files/hooks/mutations/useDeleteFileMutation";
 import {
   Dialog,
@@ -20,6 +19,8 @@ import {
   DialogFooter,
   DialogTitle,
 } from "../ui/dialog";
+import { useNavigate } from "react-router-dom";
+import { Badge } from "../ui/badge";
 
 interface FileTableRowProps {
   files: FileListItem[];
@@ -35,8 +36,8 @@ export const FileTableRow = ({ files }: FileTableRowProps) => {
   );
 };
 
-const FileTableRowItem = ({ file }: { file: File }) => {
-  const [downloadingId, setDownloadingId] = useState<number | null>(null);
+const FileTableRowItem = ({ file }: { file: FileListItem }) => {
+  const navigate = useNavigate();
   const [confirmDelete, setConfirmDelete] = useState(false);
   const { refetch: downloadFile, isFetching } = useFileDownloadQuery({
     id: file.id,
@@ -153,14 +154,17 @@ const FileTableRowItem = ({ file }: { file: File }) => {
                 downloadFile();
                 e.stopPropagation();
               }}
-              disabled={isDownloading}
+              disabled={isFetching}
             >
               <Download className="mr-2 h-4 w-4" />
-              {isDownloading ? "Downloading..." : "Download"}
+              {isFetching ? "Downloading..." : "Download"}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={() => setConfirmDelete(true)}
+              onClick={(e) => {
+                setConfirmDelete(true);
+                e.stopPropagation();
+              }}
               className="text-red-600 focus:text-red-600"
             >
               <Trash2 className="mr-2 h-4 w-4" />
@@ -182,10 +186,11 @@ const FileTableRowItem = ({ file }: { file: File }) => {
             </Button>
             <Button
               variant="destructive"
-              onClick={() => {
+              onClick={(e) => {
                 deleteFile(file.id, {
                   onSuccess: () => setConfirmDelete(false),
                 });
+                e.stopPropagation();
               }}
               disabled={isDeleting}
             >
