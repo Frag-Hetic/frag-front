@@ -38,30 +38,32 @@ export default function FileList() {
 
   const chartData = files
     .map((file) => {
-      let originalSize = parseFloat(file.stats.originalSize.replace(" KB", "").replace(" MB", ""));
+      let originalSize = parseFloat(
+        file.stats.originalSize.replace(" KB", "").replace(" MB", "")
+      );
       if (file.stats.originalSize.includes("KB")) {
         originalSize = originalSize / 1024;
       }
       const chunksCount = file.chunksCount;
       return {
         fileSize: originalSize,
-        chunkCount: chunksCount, 
+        chunkCount: chunksCount,
       };
     })
     .sort((a, b) => a.fileSize - b.fileSize);
 
-  const chartDataMimeType = files
-    .map((file) => {
-      let compressedSize = parseFloat(file.stats.compressedSize.replace(" KB", "").replace(" MB", ""));
-      if (file.stats.compressedSize.includes("KB")) {
-        compressedSize = compressedSize / 1024; 
-      }
-      return {
-        mimeType: file.mimeType, 
-        compressedSize: compressedSize, 
-      };
-    });
-
+  const chartDataMimeType = files.map((file) => {
+    let compressedSize = parseFloat(
+      file.stats.compressedSize.replace(" KB", "").replace(" MB", "")
+    );
+    if (file.stats.compressedSize.includes("KB")) {
+      compressedSize = compressedSize / 1024;
+    }
+    return {
+      mimeType: file.mimeType,
+      compressedSize: compressedSize,
+    };
+  });
 
   return (
     <>
