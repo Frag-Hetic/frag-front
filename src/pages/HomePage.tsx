@@ -142,7 +142,7 @@ function HomePage() {
           </Link>
           <Button variant="ghost" asChild>
             <a
-              href="https://github.com/yourusername/noris"
+              href="https://github.com/frag-hetic/"
               target="_blank"
               rel="noopener noreferrer"
             >
