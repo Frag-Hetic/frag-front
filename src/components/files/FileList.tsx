@@ -4,15 +4,16 @@ import { FilesIcon } from "lucide-react";
 import { FileTableSkeleton } from "./skeleton/FileTableSkeleton";
 import { FileTable } from "./FileTable";
 import { useFilesQuery } from "@/services/files/hooks/queries/useFileQuery";
+import { FileTypePieChart } from "./FileTypePieChart";
 import { FileSizeChunkChart } from "./FileSizeChunkChart";
 import { Separator } from "../ui/separator";
 
 // Fonction pour parser la taille des fichiers
 function parseSize(sizeStr: string) {
   if (sizeStr.includes(" B")) {
-    return parseFloat(sizeStr.replace(" B", "")) / 1024 / 1024; // Convertit en MB
+    return parseFloat(sizeStr.replace(" B", "")) / 1000 / 1000; // Convertit en MB
   } else if (sizeStr.includes("KB")) {
-    return parseFloat(sizeStr.replace(" KB", "")) / 1024; // Convertit en MB
+    return parseFloat(sizeStr.replace(" KB", "")) / 1000; // Convertit en MB
   } else if (sizeStr.includes("MB")) {
     return parseFloat(sizeStr.replace(" MB", ""));
   }
@@ -58,6 +59,14 @@ export default function FileList() {
     })
     .sort((a, b) => a.fileSize - b.fileSize);
 
+  const chartDataMimeType = files.map((file) => {
+    const compressedSize = parseSize(file.stats.compressedSize);
+    return {
+      mimeType: file.mimeType,
+      compressedSize: compressedSize,
+    };
+  });
+
   return (
     <div className="space-y-8">
       {/* Files Table Section */}
@@ -79,8 +88,8 @@ export default function FileList() {
         </div>
         <Separator />
 
-        <div className="w-full">
-          {/* <FileTypePieChart chartDataMimeType={chartDataMimeType} /> */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FileTypePieChart chartDataMimeType={chartDataMimeType} />
           <FileSizeChunkChart chartData={chartData} />
         </div>
       </section>
