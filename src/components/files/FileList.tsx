@@ -4,9 +4,21 @@ import { FilesIcon } from "lucide-react";
 import { FileTableSkeleton } from "./skeleton/FileTableSkeleton";
 import { FileTable } from "./FileTable";
 import { useFilesQuery } from "@/services/files/hooks/queries/useFileQuery";
-import { CardContent } from "@/components/ui/card";
 import { FileTypePieChart } from "./FileTypePieChart";
 import { FileSizeChunkChart } from "./FileSizeChunkChart";
+import { Separator } from "../ui/separator";
+
+// Fonction pour parser la taille des fichiers
+function parseSize(sizeStr: string) {
+  if (sizeStr.includes(" B")) {
+    return parseFloat(sizeStr.replace(" B", "")) / 1024 / 1024; // Convertit en MB
+  } else if (sizeStr.includes("KB")) {
+    return parseFloat(sizeStr.replace(" KB", "")) / 1024; // Convertit en MB
+  } else if (sizeStr.includes("MB")) {
+    return parseFloat(sizeStr.replace(" MB", ""));
+  }
+  return 0; // Sécurité si la donnée est mal formée
+}
 
 export default function FileList() {
   const { data: files, isLoading, error } = useFilesQuery();
@@ -38,12 +50,7 @@ export default function FileList() {
 
   const chartData = files
     .map((file) => {
-      let originalSize = parseFloat(
-        file.stats.originalSize.replace(" KB", "").replace(" MB", "")
-      );
-      if (file.stats.originalSize.includes("KB")) {
-        originalSize = originalSize / 1024;
-      }
+      const originalSize = parseSize(file.stats.originalSize);
       const chunksCount = file.chunksCount;
       return {
         fileSize: originalSize,
@@ -53,12 +60,7 @@ export default function FileList() {
     .sort((a, b) => a.fileSize - b.fileSize);
 
   const chartDataMimeType = files.map((file) => {
-    let compressedSize = parseFloat(
-      file.stats.compressedSize.replace(" KB", "").replace(" MB", "")
-    );
-    if (file.stats.compressedSize.includes("KB")) {
-      compressedSize = compressedSize / 1024;
-    }
+    const compressedSize = parseSize(file.stats.compressedSize);
     return {
       mimeType: file.mimeType,
       compressedSize: compressedSize,
@@ -66,14 +68,31 @@ export default function FileList() {
   });
 
   return (
-    <>
-      <div className="border rounded-md">
-        <FileTable files={files} />
-      </div>
-      <CardContent>
-        <FileTypePieChart chartDataMimeType={chartDataMimeType} />
-      </CardContent>
-      <FileSizeChunkChart chartData={chartData} />
-    </>
+    <div className="space-y-8">
+      {/* Files Table Section */}
+      <section className="mb-8">
+        <div className="border rounded-md">
+          <FileTable files={files} />
+        </div>
+      </section>
+
+      {/* Analytics Section */}
+      <section className="space-y-6">
+        <div className="flex items-center">
+          <div>
+            <h2 className="text-2xl font-semibold tracking-tight">Analytics</h2>
+            <p className="text-sm text-muted-foreground">
+              Visualize your file compression statistics
+            </p>
+          </div>
+        </div>
+        <Separator />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FileTypePieChart chartDataMimeType={chartDataMimeType} />
+          <FileSizeChunkChart chartData={chartData} />
+        </div>
+      </section>
+    </div>
   );
 }

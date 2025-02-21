@@ -41,7 +41,7 @@ export function FileSizeChunkChart({ chartData }: FileSizeChunkChartProps) {
                 position: "insideBottomRight",
                 offset: -5,
               }}
-              tickFormatter={(value) => `${value} MB`}
+              tickFormatter={(value) => `${value.toFixed(3)} MB`} // Limiter à 3 décimales
             />
             <YAxis
               label={{
