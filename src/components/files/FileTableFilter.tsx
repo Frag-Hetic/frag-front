@@ -1,3 +1,4 @@
+import { useFileFilters } from "@/services/files/hooks/useFileFilters";
 import { Input } from "../ui/input";
 import {
   Select,
@@ -8,24 +9,28 @@ import {
 } from "../ui/select";
 
 export default function FileTableFilter() {
-  // const { data: files, isLoading, error } = useFilesQuery();
+  const { filters, updateFilter } = useFileFilters();
 
   return (
     <div className="flex space-x-4">
       <Input
         placeholder="Filter name..."
-        value={""}
-        onChange={() => {}}
+        value={filters.fileName}
+        onChange={(e) => updateFilter("fileName", e.target.value)}
         className="max-w-sm"
       />
-      <Select>
+      <Select
+        value={filters.mimeType ?? "all"}
+        onValueChange={(value) => updateFilter("mimeType", value)}
+      >
         <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Theme" />
+          <SelectValue placeholder="Type de fichier" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="light">Light</SelectItem>
-          <SelectItem value="dark">Dark</SelectItem>
-          <SelectItem value="system">System</SelectItem>
+          <SelectItem value="all">Tous</SelectItem>
+          <SelectItem value="image">Images</SelectItem>
+          <SelectItem value="video">Vidéos</SelectItem>
+          <SelectItem value="document">Documents</SelectItem>
         </SelectContent>
       </Select>
     </div>
