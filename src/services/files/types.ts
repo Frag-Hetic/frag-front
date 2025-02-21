@@ -78,11 +78,21 @@ export interface ChunkDetailInfo {
   originalSize: string;
   compressedSize: string;
   compressionRatio: string;
+  spaceSaved: string;
+  isExpanded: boolean;
   compressionType: string;
+}
+
+export interface UploadFileConfig {
+  windowSize: number;
+  chunkMinSize: number;
+  chunkMaxSize: number;
+  breakpointMask: string;
 }
 
 export interface UploadFileData {
   file: File;
+  config: UploadFileConfig;
 }
 
 export interface UploadFileResponse {

@@ -9,14 +9,9 @@ interface FileTableProps {
 
 export const FileTable = ({ files }: FileTableProps) => {
   return (
-    <div className="grid gap-4 mt-4">
-      <h1 className="text-2xl font-semibold">Files List</h1>
-      <div className={"border rounded-md"}>
-        <Table>
-          <FileTableHeader />
-          <FileTableRow files={files} />
-        </Table>
-      </div>
-    </div>
+    <Table>
+      <FileTableHeader />
+      <FileTableRow files={files} />
+    </Table>
   );
 };

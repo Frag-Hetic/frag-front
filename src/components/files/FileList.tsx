@@ -33,5 +33,9 @@ export default function FileList() {
     );
   }
 
-  return <FileTable files={files} />;
+  return (
+    <div className="border rounded-md">
+      <FileTable files={files} />
+    </div>
+  );
 }
