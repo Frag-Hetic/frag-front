@@ -3,10 +3,13 @@ import { Input } from "../ui/input";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { FILE_MIMES } from "@/services/files/fileUtils";
 
 export default function FileTableFilter() {
   const { filters, updateFilter } = useFileFilters();
@@ -27,10 +30,16 @@ export default function FileTableFilter() {
           <SelectValue placeholder="Type de fichier" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Tous</SelectItem>
-          <SelectItem value="image">Images</SelectItem>
-          <SelectItem value="video">Vidéos</SelectItem>
-          <SelectItem value="document">Documents</SelectItem>
+          {FILE_MIMES.map((fileMime) => (
+            <SelectGroup>
+              <SelectLabel>{fileMime.label}</SelectLabel>
+              {fileMime.mimes.map((type) => (
+                <SelectItem key={type.value} value={type.value}>
+                  {type.label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          ))}
         </SelectContent>
       </Select>
     </div>
