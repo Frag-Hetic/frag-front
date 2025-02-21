@@ -13,6 +13,13 @@ import { useState } from "react";
 import { FileIcon, UploadIcon, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const defaultValues = {
   config: {
@@ -195,10 +202,20 @@ export function FileUploadForm({ onSuccess }: FileUploadFormProps) {
               {/* Breakpoint Mask */}
               <div className="space-y-2">
                 <Label>Breakpoint Mask</Label>
-                <Input
-                  {...form.register("config.breakpointMask")}
-                  placeholder="0x1FFF"
-                />
+                <Select
+                  onValueChange={(value) =>
+                    form.setValue("config.breakpointMask", value)
+                  }
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="0x1FFF" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0x1FFF">0x1FFF</SelectItem>
+                    <SelectItem value="0x3FFF">0x3FFF</SelectItem>
+                    <SelectItem value="0x0FFF">0x0FFF</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </AccordionContent>
