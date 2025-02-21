@@ -32,7 +32,7 @@ export const FileDeleteDialog = ({
         </DialogDescription>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            Annuler
+            Cancel
           </Button>
           <Button
             variant="destructive"
