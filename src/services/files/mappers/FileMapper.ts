@@ -1,31 +1,90 @@
-import { formatSizeToMbSize, mapStringToDateFormat } from "@/lib/utils";
-import { DetailedFile, File, FileDTO } from "../types";
+import { formatSizeToBytes, mapStringToDateFormat } from "@/lib/utils";
+import {
+  DetailedFile,
+  FileDTO,
+  FileListItem,
+  FileStats,
+  FileConfig,
+} from "../types";
 import { mapMimeTypeToFileIcon } from "../fileUtils";
 
+const calculateCompressionMetrics = (
+  fileSize: number,
+  compressedSize: number
+) => {
+  const compressionRatio = (compressedSize / fileSize) * 100;
+  const spaceSaved = 100 - compressionRatio;
+
+  return {
+    compressionRatio: `${compressionRatio.toFixed(2)}%`,
+    spaceSaved: parseFloat(spaceSaved.toFixed(2)),
+  };
+};
+
+const mapBaseFileInfo = (dto: FileDTO) => ({
+  id: dto.id,
+  filename: dto.filename,
+  fileIcon: mapMimeTypeToFileIcon(dto.mimeType),
+  mimeType: dto.mimeType,
+});
+
+const mapFileStats = (dto: FileDTO): FileStats => {
+  const metrics = calculateCompressionMetrics(
+    dto.fileSize,
+    dto.compressedFileSize
+  );
+
+  return {
+    originalSize: formatSizeToBytes(dto.fileSize),
+    compressedSize: formatSizeToBytes(dto.compressedFileSize),
+    compressionRatio: metrics.compressionRatio,
+    spaceSaved: metrics.spaceSaved,
+    processingTime: dto.processingTime,
+  };
+};
+
+const mapFileConfig = (dto: FileDTO): FileConfig => ({
+  windowSize: formatSizeToBytes(dto.windowSize),
+  minChunkSize: formatSizeToBytes(dto.chunkMinSize),
+  maxChunkSize: formatSizeToBytes(dto.chunkMaxSize),
+  breakpointMask: dto.breakpointMask,
+});
+
 export const fileMapper = {
-  toFile: (dto: FileDTO): File => ({
-    id: dto.id,
-    filename: dto.filename,
-    fileSize: formatSizeToMbSize(dto.fileSize),
-    compressedFileSize: formatSizeToMbSize(dto.compressedFileSize),
-    mimeType: dto.mimeType,
-    chunkNumber: dto.filesChunks.length,
-    createdAt: mapStringToDateFormat(dto.createdAt),
-    updatedAt: mapStringToDateFormat(dto.updatedAt),
-  }),
+  toFileList: (dtos: FileDTO[]): FileListItem[] =>
+    dtos.map((dto) => ({
+      ...mapBaseFileInfo(dto),
+      stats: mapFileStats(dto),
+      chunksCount: dto.filesChunks.length,
+      dates: {
+        created: mapStringToDateFormat(dto.createdAt),
+        updated: mapStringToDateFormat(dto.updatedAt),
+      },
+      config: mapFileConfig(dto),
+    })),
 
   toDetailedFile: (dto: FileDTO): DetailedFile => ({
-    id: dto.id,
-    fileIcon: mapMimeTypeToFileIcon(dto.mimeType),
-    filename: dto.filename,
-    fileSize: formatSizeToMbSize(dto.fileSize),
-    compressedFileSize: formatSizeToMbSize(dto.compressedFileSize),
-    mimeType: dto.mimeType,
+    ...mapBaseFileInfo(dto),
+    stats: mapFileStats(dto),
+    config: mapFileConfig(dto),
     chunkNumber: dto.filesChunks.length,
-    filesChunks: dto.filesChunks,
-    createdAt: mapStringToDateFormat(dto.createdAt),
-    updatedAt: mapStringToDateFormat(dto.updatedAt),
-  }),
+    chunksDetails: dto.filesChunks.map((chunk) => {
+      const compressionRatio =
+        (chunk.chunk.sizeCompressed / chunk.chunk.sizeOriginal) * 100;
+      const spaceSaved = 100 - compressionRatio;
+      const isExpanded = compressionRatio > 100;
 
-  toFileList: (dtos: FileDTO[]): File[] => dtos.map(fileMapper.toFile),
+      return {
+        id: chunk.id,
+        hash: chunk.chunk.hash,
+        order: chunk.chunkOrder,
+        originalSize: formatSizeToBytes(chunk.chunk.sizeOriginal),
+        compressedSize: formatSizeToBytes(chunk.chunk.sizeCompressed),
+        compressionRatio: `${compressionRatio.toFixed(2)}`,
+        spaceSaved: `${spaceSaved.toFixed(2)}`,
+        isExpanded,
+        compressionType: chunk.chunk.compressionType,
+      };
+    }),
+  }),
 };
