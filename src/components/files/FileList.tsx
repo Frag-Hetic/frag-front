@@ -8,6 +8,18 @@ import { CardContent } from "@/components/ui/card";
 import { FileTypePieChart } from "./FileTypePieChart";
 import { FileSizeChunkChart } from "./FileSizeChunkChart";
 
+// Fonction pour parser la taille des fichiers
+function parseSize(sizeStr: string) {
+  if (sizeStr.includes(" B")) {
+    return parseFloat(sizeStr.replace(" B", "")) / 1024 / 1024; // Convertit en MB
+  } else if (sizeStr.includes("KB")) {
+    return parseFloat(sizeStr.replace(" KB", "")) / 1024; // Convertit en MB
+  } else if (sizeStr.includes("MB")) {
+    return parseFloat(sizeStr.replace(" MB", ""));
+  }
+  return 0; // Sécurité si la donnée est mal formée
+}
+
 export default function FileList() {
   const { data: files, isLoading, error } = useFilesQuery();
 
@@ -38,12 +50,7 @@ export default function FileList() {
 
   const chartData = files
     .map((file) => {
-      let originalSize = parseFloat(
-        file.stats.originalSize.replace(" KB", "").replace(" MB", "")
-      );
-      if (file.stats.originalSize.includes("KB")) {
-        originalSize = originalSize / 1024;
-      }
+      let originalSize = parseSize(file.stats.originalSize);
       const chunksCount = file.chunksCount;
       return {
         fileSize: originalSize,
@@ -53,12 +60,7 @@ export default function FileList() {
     .sort((a, b) => a.fileSize - b.fileSize);
 
   const chartDataMimeType = files.map((file) => {
-    let compressedSize = parseFloat(
-      file.stats.compressedSize.replace(" KB", "").replace(" MB", "")
-    );
-    if (file.stats.compressedSize.includes("KB")) {
-      compressedSize = compressedSize / 1024;
-    }
+    let compressedSize = parseSize(file.stats.compressedSize);
     return {
       mimeType: file.mimeType,
       compressedSize: compressedSize,
