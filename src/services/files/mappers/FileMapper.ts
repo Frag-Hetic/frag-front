@@ -23,7 +23,7 @@ const calculateCompressionMetrics = (
 
 const mapBaseFileInfo = (dto: FileDTO) => ({
   id: dto.id,
-  filename: dto.filename,
+  filename: dto.fileName,
   fileIcon: mapMimeTypeToFileIcon(dto.mimeType),
   mimeType: dto.mimeType,
 });
