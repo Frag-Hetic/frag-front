@@ -12,15 +12,9 @@ import { Button } from "../ui/button";
 import { useFileDownloadQuery } from "@/services/files/hooks/queries/useFileQuery";
 import { useState } from "react";
 import { useDeleteFileMutation } from "@/services/files/hooks/mutations/useDeleteFileMutation";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogTitle,
-} from "../ui/dialog";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "../ui/badge";
+import { FileDeleteDialog } from "./FileDeleteDialog";
 
 interface FileTableRowProps {
   files: FileListItem[];
@@ -38,12 +32,12 @@ export const FileTableRow = ({ files }: FileTableRowProps) => {
 
 const FileTableRowItem = ({ file }: { file: FileListItem }) => {
   const navigate = useNavigate();
-  const [confirmDelete, setConfirmDelete] = useState(false);
   const { refetch: downloadFile, isFetching } = useFileDownloadQuery({
     id: file.id,
     filename: file.filename,
   });
   const { mutate: deleteFile, isPending: isDeleting } = useDeleteFileMutation();
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   return (
     <TableRow
@@ -174,31 +168,15 @@ const FileTableRowItem = ({ file }: { file: FileListItem }) => {
         </DropdownMenu>
       </TableCell>
 
-      <Dialog open={confirmDelete} onOpenChange={setConfirmDelete}>
-        <DialogContent>
-          <DialogTitle>Delete the file</DialogTitle>
-          <DialogDescription>
-            Are you sure you want to delete the file {file.filename}?
-          </DialogDescription>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setConfirmDelete(false)}>
-              Cancel
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={(e) => {
-                deleteFile(file.id, {
-                  onSuccess: () => setConfirmDelete(false),
-                });
-                e.stopPropagation();
-              }}
-              disabled={isDeleting}
-            >
-              {isDeleting ? "Deleting..." : "Delete"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <FileDeleteDialog
+        isOpen={confirmDelete}
+        onClose={() => setConfirmDelete(false)}
+        onConfirm={() =>
+          deleteFile(file.id, { onSuccess: () => setConfirmDelete(false) })
+        }
+        isDeleting={isDeleting}
+        filename={file.filename}
+      />
     </TableRow>
   );
 };
