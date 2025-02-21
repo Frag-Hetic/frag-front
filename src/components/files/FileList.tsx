@@ -11,9 +11,9 @@ import { Separator } from "../ui/separator";
 // Fonction pour parser la taille des fichiers
 function parseSize(sizeStr: string) {
   if (sizeStr.includes(" B")) {
-    return parseFloat(sizeStr.replace(" B", "")) / 1024 / 1024; // Convertit en MB
+    return parseFloat(sizeStr.replace(" B", "")) / 1000 / 1000; // Convertit en MB
   } else if (sizeStr.includes("KB")) {
-    return parseFloat(sizeStr.replace(" KB", "")) / 1024; // Convertit en MB
+    return parseFloat(sizeStr.replace(" KB", "")) / 1000; // Convertit en MB
   } else if (sizeStr.includes("MB")) {
     return parseFloat(sizeStr.replace(" MB", ""));
   }
