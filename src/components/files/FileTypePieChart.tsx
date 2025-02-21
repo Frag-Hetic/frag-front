@@ -146,10 +146,12 @@ export function FileTypePieChart({
               align="center"
               iconType="circle"
               formatter={(value: string) => {
-                console.log(mimeTypeGroups[value])
-                const size = mimeTypeGroups[value] || 0; 
-                const label = chartConfig[value as keyof typeof chartConfig]?.label || value; 
-                return `${label}: ${size.toLocaleString()} MB`; 
+                console.log(mimeTypeGroups[value]);
+                const size = mimeTypeGroups[value] || 0;
+                const label =
+                  chartConfig[value as keyof typeof chartConfig]?.label ||
+                  value;
+                return `${label}: ${size.toLocaleString()} MB`;
               }}
             />
           </PieChart>

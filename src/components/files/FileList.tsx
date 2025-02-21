@@ -50,7 +50,7 @@ export default function FileList() {
 
   const chartData = files
     .map((file) => {
-      let originalSize = parseSize(file.stats.originalSize);
+      const originalSize = parseSize(file.stats.originalSize);
       const chunksCount = file.chunksCount;
       return {
         fileSize: originalSize,
@@ -60,7 +60,7 @@ export default function FileList() {
     .sort((a, b) => a.fileSize - b.fileSize);
 
   const chartDataMimeType = files.map((file) => {
-    let compressedSize = parseSize(file.stats.compressedSize);
+    const compressedSize = parseSize(file.stats.compressedSize);
     return {
       mimeType: file.mimeType,
       compressedSize: compressedSize,
