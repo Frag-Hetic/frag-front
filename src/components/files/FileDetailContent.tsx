@@ -4,17 +4,25 @@ import { Badge } from "../ui/badge";
 import { Download, Trash2 } from "lucide-react";
 import { Progress } from "../ui/progress";
 import { useFileDownloadQuery } from "@/services/files/hooks/queries/useFileQuery";
+import { useState } from "react";
+import { useDeleteFileMutation } from "@/services/files/hooks/mutations/useDeleteFileMutation";
+import { FileDeleteDialog } from "./FileDeleteDialog";
+import { useNavigate } from "react-router-dom";
 
 interface FileDetailContentProps {
   file: DetailedFile;
 }
 
 export const FileDetailContent = ({ file }: FileDetailContentProps) => {
+  const navigate = useNavigate();
   const { refetch: downloadFile, isFetching: isDownloading } =
     useFileDownloadQuery({
       id: file.id,
       filename: file.filename,
     });
+  const { mutate: deleteFile, isPending: isDeleting } = useDeleteFileMutation();
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
   return (
     <div className="px-6 pb-6 space-y-6">
       {/* File Stats */}
@@ -81,11 +89,34 @@ export const FileDetailContent = ({ file }: FileDetailContentProps) => {
           <Download className="mr-2 h-4 w-4" />
           Download
         </Button>
-        <Button variant="destructive" size="sm" className="w-full">
+        <Button
+          onClick={(e) => {
+            setConfirmDelete(true);
+            e.stopPropagation();
+          }}
+          variant="destructive"
+          size="sm"
+          className="w-full"
+        >
           <Trash2 className="mr-2 h-4 w-4" />
           Delete
         </Button>
       </div>
+
+      <FileDeleteDialog
+        isOpen={confirmDelete}
+        onClose={() => setConfirmDelete(false)}
+        onConfirm={() =>
+          deleteFile(file.id, {
+            onSuccess: () => {
+              setConfirmDelete(false);
+              navigate("/files");
+            },
+          })
+        }
+        isDeleting={isDeleting}
+        filename={file.filename}
+      />
     </div>
   );
 };

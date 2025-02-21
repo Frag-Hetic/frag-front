@@ -10,8 +10,11 @@ import {
 import { Clock, Download, MoreHorizontal, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useFileDownloadQuery } from "@/services/files/hooks/queries/useFileQuery";
-import { Badge } from "../ui/badge";
+import { useState } from "react";
+import { useDeleteFileMutation } from "@/services/files/hooks/mutations/useDeleteFileMutation";
 import { useNavigate } from "react-router-dom";
+import { Badge } from "../ui/badge";
+import { FileDeleteDialog } from "./FileDeleteDialog";
 
 interface FileTableRowProps {
   files: FileListItem[];
@@ -29,11 +32,12 @@ export const FileTableRow = ({ files }: FileTableRowProps) => {
 
 const FileTableRowItem = ({ file }: { file: FileListItem }) => {
   const navigate = useNavigate();
-  const { refetch: downloadFile, isFetching: isDownloading } =
-    useFileDownloadQuery({
-      id: file.id,
-      filename: file.filename,
-    });
+  const { refetch: downloadFile, isFetching } = useFileDownloadQuery({
+    id: file.id,
+    filename: file.filename,
+  });
+  const { mutate: deleteFile, isPending: isDeleting } = useDeleteFileMutation();
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   return (
     <TableRow
@@ -144,15 +148,18 @@ const FileTableRowItem = ({ file }: { file: FileListItem }) => {
                 downloadFile();
                 e.stopPropagation();
               }}
-              disabled={isDownloading}
+              disabled={isFetching}
             >
               <Download className="mr-2 h-4 w-4" />
-              {isDownloading ? "Downloading..." : "Download"}
+              {isFetching ? "Downloading..." : "Download"}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={() => console.log("Delete", file.id)}
-              className="text-destructive focus:text-destructive"
+              onClick={(e) => {
+                setConfirmDelete(true);
+                e.stopPropagation();
+              }}
+              className="text-red-600 focus:text-red-600"
             >
               <Trash2 className="mr-2 h-4 w-4" />
               Delete
@@ -160,6 +167,16 @@ const FileTableRowItem = ({ file }: { file: FileListItem }) => {
           </DropdownMenuContent>
         </DropdownMenu>
       </TableCell>
+
+      <FileDeleteDialog
+        isOpen={confirmDelete}
+        onClose={() => setConfirmDelete(false)}
+        onConfirm={() =>
+          deleteFile(file.id, { onSuccess: () => setConfirmDelete(false) })
+        }
+        isDeleting={isDeleting}
+        filename={file.filename}
+      />
     </TableRow>
   );
 };
