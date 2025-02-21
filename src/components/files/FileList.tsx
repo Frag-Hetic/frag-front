@@ -4,7 +4,6 @@ import { FilesIcon } from "lucide-react";
 import { FileTableSkeleton } from "./skeleton/FileTableSkeleton";
 import { FileTable } from "./FileTable";
 import { useFilesQuery } from "@/services/files/hooks/queries/useFileQuery";
-import { FileTypePieChart } from "./FileTypePieChart";
 import { FileSizeChunkChart } from "./FileSizeChunkChart";
 import { Separator } from "../ui/separator";
 
@@ -59,14 +58,6 @@ export default function FileList() {
     })
     .sort((a, b) => a.fileSize - b.fileSize);
 
-  const chartDataMimeType = files.map((file) => {
-    const compressedSize = parseSize(file.stats.compressedSize);
-    return {
-      mimeType: file.mimeType,
-      compressedSize: compressedSize,
-    };
-  });
-
   return (
     <div className="space-y-8">
       {/* Files Table Section */}
@@ -88,8 +79,8 @@ export default function FileList() {
         </div>
         <Separator />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FileTypePieChart chartDataMimeType={chartDataMimeType} />
+        <div className="w-full">
+          {/* <FileTypePieChart chartDataMimeType={chartDataMimeType} /> */}
           <FileSizeChunkChart chartData={chartData} />
         </div>
       </section>
