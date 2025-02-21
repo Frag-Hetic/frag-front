@@ -171,9 +171,14 @@ const FileTableRowItem = ({ file }: { file: FileListItem }) => {
       <FileDeleteDialog
         isOpen={confirmDelete}
         onClose={() => setConfirmDelete(false)}
-        onConfirm={() =>
-          deleteFile(file.id, { onSuccess: () => setConfirmDelete(false) })
-        }
+        onConfirm={(e) => {
+          deleteFile(file.id, {
+            onSuccess: () => {
+              setConfirmDelete(false);
+            },
+          });
+          e.stopPropagation();
+        }}
         isDeleting={isDeleting}
         filename={file.filename}
       />
