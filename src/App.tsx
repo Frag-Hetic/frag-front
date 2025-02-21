@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/query/queryClient";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import UserRouter from "./routes/UserRouter";
 import { Toaster } from "./components/ui/toaster";
 import FileRouter from "./routes/FileRouter";
@@ -19,7 +19,7 @@ function App() {
         </Routes>
       </BrowserRouter>
       <Toaster />
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   );
 }
