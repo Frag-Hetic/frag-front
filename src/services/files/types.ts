@@ -1,6 +1,6 @@
 export interface FileDTO {
   id: number;
-  filename: string;
+  fileName: string;
   fileSize: number;
   compressedFileSize: number;
   mimeType: string;

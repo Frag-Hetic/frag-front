@@ -1,4 +1,5 @@
 import FileList from "@/components/files/FileList";
+import FileTableFilter from "@/components/files/FileTableFilter";
 import { FileUploadModal } from "@/components/files/upload/FileUploadModal";
 import { Button } from "@/components/ui/button";
 import { ChevronLeftIcon } from "lucide-react";
@@ -14,7 +15,10 @@ export default function ListFilesPage() {
           </Link>
         </Button>
         <h1 className="text-2xl font-semibold">Files List</h1>
-        <FileUploadModal />
+        <div className="flex space-x-4">
+          <FileTableFilter />
+          <FileUploadModal />
+        </div>
       </div>
       <FileList />
     </div>
